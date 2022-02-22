@@ -1,0 +1,476 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="图像放大放大图像的关键是增加像素。 图像放大后原像素点的相对位置关系应该是不变的，所以对于小图中的每一个点，只需要将他们的坐标乘以对应的放大倍数（横纵），就可以得到小图中的点在放大后图像中的坐标。此时图像中存在大量未被填充的区域，所以需要通过一定的算法将这些区域填充完毕。 例如将一幅图片放大3*3倍，未被填充的区域先用黑色代替。 1234567891011121314151617import cv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图像放大缩小原理">
+<meta property="og:url" content="http://example.com/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Befine">
+<meta property="og:description" content="图像放大放大图像的关键是增加像素。 图像放大后原像素点的相对位置关系应该是不变的，所以对于小图中的每一个点，只需要将他们的坐标乘以对应的放大倍数（横纵），就可以得到小图中的点在放大后图像中的坐标。此时图像中存在大量未被填充的区域，所以需要通过一定的算法将这些区域填充完毕。 例如将一幅图片放大3*3倍，未被填充的区域先用黑色代替。 1234567891011121314151617import cv">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/test.png">
+<meta property="og:image" content="http://example.com/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/test1.png">
+<meta property="og:image" content="http://example.com/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/test2.png">
+<meta property="og:image" content="http://example.com/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/test20.png">
+<meta property="article:published_time" content="2022-02-22T10:24:41.000Z">
+<meta property="article:modified_time" content="2022-02-22T14:25:41.346Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/test.png">
+  
+  
+  <title>图像放大缩小原理 - Befine</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>kyle</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="图像放大缩小原理">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-02-22 18:24" pubdate>
+        February 22, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">图像放大缩小原理</h1>
+            
+            <div class="markdown-body">
+              <h3 id="图像放大"><a href="#图像放大" class="headerlink" title="图像放大"></a>图像放大</h3><p>放大图像的关键是增加像素。</p>
+<p>图像放大后原像素点的相对位置关系应该是不变的，所以对于小图中的每一个点，只需要将他们的坐标乘以对应的放大倍数（横纵），就可以得到小图中的点在放大后图像中的坐标。此时图像中存在大量未被填充的区域，所以需要通过一定的算法将这些区域填充完毕。</p>
+<p>例如将一幅图片放大3*3倍，未被填充的区域先用黑色代替。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> cv2<br><span class="hljs-keyword">import</span> numpy<br><br>img_address = <span class="hljs-string">&#x27;C:/Users/kyle/Desktop/lena.png&#x27;</span><br>img = cv2.imread(img_address)<br><br>height = img.shape[<span class="hljs-number">0</span>]<br>width = img.shape[<span class="hljs-number">1</span>]<br>x_rate = <span class="hljs-number">6</span><br>y_rate = <span class="hljs-number">6</span><br>bigger_pic = numpy.zeros([height*y_rate, width*x_rate, <span class="hljs-number">3</span>], numpy.uint8)<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(height):<br>    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(width):<br>        bigger_pic[i*y_rate][j*x_rate] = img[i][j]<br>        <br>cv2.imwrite(<span class="hljs-string">&#x27;C:/Users/kyle/Desktop/lena1.png&#x27;</span>, bigger_pic)<br></code></pre></td></tr></table></figure>
+
+<p>原图：</p>
+<p><img src="/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/test.png" srcset="/img/loading.gif" lazyload alt="test"></p>
+<p>结果：</p>
+<p><img src="/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/test1.png" srcset="/img/loading.gif" lazyload alt="test1"></p>
+<h4 id="最邻近点插值法"><a href="#最邻近点插值法" class="headerlink" title="最邻近点插值法"></a>最邻近点插值法</h4><p>​        在未填充的区域，计算离该点最近的已填充像素点，然后使用它的颜色信息给该点赋值。</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs prolog"># 最邻近点插值法<br>def <span class="hljs-symbol">Nearest_Neighbor</span>(former_img, rate_y, rate_x):<br>    for i in range(former_img.shape[<span class="hljs-number">0</span>]):<br>        for j in range(former_img.shape[<span class="hljs-number">1</span>]):<br>            if i//rate_y == <span class="hljs-number">0</span> and j//x_rate == <span class="hljs-number">0</span>: # 已赋值的点<br>                continue # 跳过<br>            if i <span class="hljs-comment">% rate_y &gt; rate_y/2:</span><br>                y_index = i + rate_y - i <span class="hljs-comment">% rate_y</span><br>            else:<br>                y_index = i - i <span class="hljs-comment">% rate_y</span><br>            if j <span class="hljs-comment">% rate_x &gt; rate_x/2:</span><br>                x_index = j + rate_x - j <span class="hljs-comment">% rate_x</span><br>            else:<br>                x_index = j - j <span class="hljs-comment">% rate_x</span><br>            if y_index &gt;= former_img.shape[<span class="hljs-number">0</span>]:<br>                y_index -= rate_y<br>            if x_index &gt;= former_img.shape[<span class="hljs-number">1</span>]:<br>                x_index -= rate_x<br>            former_img[i][j] = former_img[y_index][x_index]<br></code></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/test2.png" srcset="/img/loading.gif" lazyload alt="test2"></p>
+<p>这种算法虽然运行速度较快，但是当放大倍数增大时，很容易出现类似“马赛克”的效果，整体比较僵硬。</p>
+<h4 id="双线性差值法"><a href="#双线性差值法" class="headerlink" title="双线性差值法"></a>双线性差值法</h4><p>​    最邻近点插值法的问题在于用于不够自然，一个人颜色到另一个颜色的变化来的太突然了，所以如果可以将填充部分的过度更加自然，那么放大的效果就会比较好。</p>
+<p>​    因此对于点的赋值不仅仅只和一个点有关，而与附近的点都有关。对于一个待填充点，考察将它包围的四个已填充点的像素值，离得越近的点，相关程度越大。最后按权相加。</p>
+<p>​    </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">Bilinear_Interpolation</span>(<span class="hljs-params">former_img, rate_y, rate_x</span>):</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(former_img.shape[<span class="hljs-number">0</span>]):<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(former_img.shape[<span class="hljs-number">1</span>]):<br>            <span class="hljs-keyword">if</span> i//rate_y == <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> j//x_rate == <span class="hljs-number">0</span>:  <span class="hljs-comment"># 已赋值的点</span><br>                <span class="hljs-keyword">continue</span>  <span class="hljs-comment"># 跳过</span><br>            <span class="hljs-comment"># 左上角包围点的坐标</span><br>            y = i - i % rate_y<br>            x = j - j % rate_x<br>            <span class="hljs-comment"># print(y,x)</span><br><br>            <span class="hljs-comment"># 先考虑边界情况,在已经赋值的点中，最大纵坐标为former_img.shape[0]-rate_y-1,最大横坐标为former_img.shape[1]-rate_x-1</span><br>            <span class="hljs-keyword">if</span> y + rate_y &gt;= former_img.shape[<span class="hljs-number">0</span>]-rate_y:  <span class="hljs-comment"># 只有上方两个点</span><br>                <span class="hljs-keyword">if</span> x + rate_x &gt;= former_img.shape[<span class="hljs-number">1</span>]-rate_x:  <span class="hljs-comment">#是最右下角一小块，直接用左上角点赋值</span><br>                    former_img[i][j] = former_img[y][x]<br>                <span class="hljs-keyword">else</span>:  <span class="hljs-comment"># 根据和两个点横坐标距离比例计算比例,与左上角点横坐标距离为（j%rate_x）,与右上角点横坐标距离为rate_x - j % rate_x</span><br>                    former_img[i][j] = (rate_x - j % rate_x)/rate_x * former_img[y][x] + \<br>                                        j % rate_x/rate_x * former_img[y][x+rate_x]<br>            <span class="hljs-keyword">elif</span> x + rate_x &gt;= former_img.shape[<span class="hljs-number">1</span>]-rate_x:<br>                former_img[i][j] = (rate_y - i % rate_y)/rate_y * former_img[y][x] + \<br>                                    i % rate_y/rate_y * former_img[y + rate_y][x]<br><br>            <span class="hljs-keyword">else</span>:  <span class="hljs-comment"># 正常情况,将四个点分成上下两对，先分别计算出横向的比例结果，在计算纵向的比例结果。</span><br>                tmp1 = (rate_x - j % rate_x)/rate_x * former_img[y][x] + j % rate_x/rate_x * former_img[y][x+rate_x]<br>                tmp2 = (rate_x - j % rate_x)/rate_x * former_img[y+rate_y][x] + j % rate_x/rate_x * former_img[y+rate_y][x+rate_x]<br>                former_img[i][j] = tmp1 * (rate_y - i % rate_y)/rate_y + tmp2 * (i%rate_y)/rate_y<br></code></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/test20.png" srcset="/img/loading.gif" lazyload alt="test20"></p>
+<p>整体看上去比最临近插值法好很多。</p>
+<h3 id="双立方插值法"><a href="#双立方插值法" class="headerlink" title="双立方插值法"></a>双立方插值法</h3><p>与双线性插值法类似，双立方插值法运用周围的16个点来进行权值计算，效果更优，代码略。</p>
+<h3 id="图像缩小"><a href="#图像缩小" class="headerlink" title="图像缩小"></a>图像缩小</h3><p>​    与放大图像相反，图像缩小时需要舍弃很多像素，相比于放大简单，但肯定会造成失真。</p>
+<p>​    一种最简单的方法就是根据缩小的比例在一个区域中任取一个点。这种方法简单又快速，但是考虑到图像中可能会存在噪声点，因此这种方法得到的缩小图像可能也会有噪声点。</p>
+<p>​    第二个方法就是取一个区域中的平均值，这样可以大幅减小图像中噪声点的影响，相比于第一种方式得到的结果也会更加平滑。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/graphic/">graphic</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/22/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">
+                        <span class="hidden-mobile">计算机组成原理</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+      <div class="col-lg-7 mx-auto nopadding-x-md">
+        <div class="container custom mx-auto">
+          <center> <span id="runtime_span", style="color:#000000"></span> </center> <script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new  Date("2/2/2022 00:00:00"); Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000; a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60); runtime_span.innerHTML="This site has survived: "+A+" days"+B+" hours"+C+" minuts"+D+" seconds"}show_runtime();</script> <center><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> <span id="busuanzi_container_site_pv">has been visited <span id="busuanzi_value_site_pv"></span> times</span></center>
+        </div>
+      </div>
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/xiantiao.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/love.js"></script>
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
