@@ -16,19 +16,38 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Archives">
-<meta property="og:url" content="http://example.com/archives/2022/02/index.html">
+    <meta name="description" content="在计算机中各种类型的数据最终都是以二进制的方式储存的 整数​    一般整形的的范围为 -2147483648～2147483647 ，用32位二进制位表示，第一位为符号位，等于0表示正的，等于1表示负的。负数用补码表示，利于计算机的加法运算。例如 -1 的二进制码为 111……1（32个1），而1的二进制码为000000……1（31个0最后一个1），相加后会向前进位，若允许的话结果是一个1后面加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机中不同类型数据的储存方式">
+<meta property="og:url" content="http://example.com/2022/02/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%AD%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E5%82%A8%E5%AD%98%E6%96%B9%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Befine">
+<meta property="og:description" content="在计算机中各种类型的数据最终都是以二进制的方式储存的 整数​    一般整形的的范围为 -2147483648～2147483647 ，用32位二进制位表示，第一位为符号位，等于0表示正的，等于1表示负的。负数用补码表示，利于计算机的加法运算。例如 -1 的二进制码为 111……1（32个1），而1的二进制码为000000……1（31个0最后一个1），相加后会向前进位，若允许的话结果是一个1后面加">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-02-23T14:55:10.000Z">
+<meta property="article:modified_time" content="2022-02-23T15:37:38.406Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>Archives - Befine</title>
+  <title>计算机中不同类型数据的储存方式 - Befine</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
@@ -55,7 +74,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -156,9 +175,43 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Archive">
+            <span class="h2" id="subtitle" title="计算机中不同类型数据的储存方式">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-02-23 22:55" pubdate>
+        February 23, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      767 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      7 分钟
+    </span>
+  
+
+  
+  
+</div>
 
             
           </div>
@@ -171,88 +224,88 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">10 posts in total.</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2022</p>
-    
-    <a href="/2022/02/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%AD%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E5%82%A8%E5%AD%98%E6%96%B9%E5%BC%8F/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">计算机中不同类型数据的储存方式</span>
-      <time style="float: right;">02-23</time>
-    </a>
-  
-    
-    <a href="/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">图像放大缩小原理</span>
-      <time style="float: right;">02-22</time>
-    </a>
-  
-    
-    <a href="/2022/02/22/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">计算机组成原理</span>
-      <time style="float: right;">02-22</time>
-    </a>
-  
-    
-    <a href="/2022/02/21/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">搜索引擎，爬虫</span>
-      <time style="float: right;">02-21</time>
-    </a>
-  
-    
-    <a href="/2022/02/21/%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">“马尔可夫模型”</span>
-      <time style="float: right;">02-21</time>
-    </a>
-  
-    
-    <a href="/2022/02/05/Dia/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Dia</span>
-      <time style="float: right;">02-05</time>
-    </a>
-  
-    
-    <a href="/2022/02/02/%E6%BB%A4%E9%95%9C/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">滤镜</span>
-      <time style="float: right;">02-02</time>
-    </a>
-  
-    
-    <a href="/2022/02/02/%E5%9F%BA%E7%A1%80/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">基础</span>
-      <time style="float: right;">02-02</time>
-    </a>
-  
-    
-    <a href="/2022/02/02/github%E5%BB%BA%E7%AB%99%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">github建站时遇到的问题</span>
-      <time style="float: right;">02-02</time>
-    </a>
-  
-</div>
 
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">计算机中不同类型数据的储存方式</h1>
+            
+            <div class="markdown-body">
+              <p><strong>在计算机中各种类型的数据最终都是以二进制的方式储存的</strong></p>
+<h3 id="整数"><a href="#整数" class="headerlink" title="整数"></a>整数</h3><p>​    一般整形的的范围为 -2147483648～2147483647 ，用32位二进制位表示，第一位为符号位，等于0表示正的，等于1表示负的。负数用补码表示，利于计算机的加法运算。例如 -1 的二进制码为 <strong>111……1</strong>（32个1），而1的二进制码为<strong>000000……1</strong>（31个0最后一个1），相加后会向前进位，若允许的话结果是一个1后面加32个0，但是由于整形的位数规定为32位，所以计算机自动舍去多余高位，得到32个0，就是结果0。</p>
+<p>​    也有长整形，增加了储存位数，原理相同。</p>
+<h3 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h3><p>​    由于小数点的存在，浮点数的储存方式比整数复杂。</p>
+<p>​    对于一个浮点数，先将浮点数按照转换规则转化为二进制数（带小数点），以<strong>3.75</strong>为例，转化为二进制为<strong>011.11</strong>（前后补0），化为科学计数法为 1.111*10^3，浮点数的储存位数一般也为32位（float），第一位为符号位，2至10位为指数位，后面23位为小数位，所以例子中符号位为0（正的），指数位的值为3，小数位的值为111，因为转化为科学计数法后整数部分必然为1，所以储存时将它忽略，再转化回去时自动将它加上，这样可以增加一个位给小数部分，可以增加它的精度。又因为指数部分可能是正的，也可能是负的，这里不采用符号位的方法来表示正负，而将指数都先加上127，使得指数部分为正数，然后转化为二进制，130转化为二进制为10000010，所以合起来就是 0 10000010 11100000000000000000000。</p>
+<p>​    对于double类型（64位），思想相同，只是储存位数不同，各个部分分配的个数也不同：一个符号位，11个指数位，52个小数位，指数运算时先加上1023.</p>
+<h3 id="字符型"><a href="#字符型" class="headerlink" title="字符型"></a>字符型</h3><p>​     <strong>ASCⅡ</strong>总共有255个，所以使用八位就可以储存。将其 <strong>ASCⅡ</strong>码转换为二进制储存即可。</p>
 
-
-
-
-              </div>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/22/%E5%9B%BE%E5%83%8F%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F%E5%8E%9F%E7%90%86/">
+                        <span class="hidden-mobile">图像放大缩小原理</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -341,6 +394,19 @@
   
 
 
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
 
 
 
