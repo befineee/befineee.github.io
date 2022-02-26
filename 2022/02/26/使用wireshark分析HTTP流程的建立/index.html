@@ -1,0 +1,632 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="课后布置任务：wireshark调研、理解、分析来理解TCP&#x2F;IP协议分层意义 使用wireshark分析HTTPS流程的建立 摘要: https流程  一、概要 为了网站以及用户的安全性，现在很多的网站都是https，大家都知道tcp通过三次握手建立连接，并且还有很多的同学对https连接建立的流程不太明白，包括我自己，通过借助于wireshark这种抓包工具，我们可以尝试着了解一下大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用wireshark分析HTTP流程的建立">
+<meta property="og:url" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/index.html">
+<meta property="og:site_name" content="Befine">
+<meta property="og:description" content="课后布置任务：wireshark调研、理解、分析来理解TCP&#x2F;IP协议分层意义 使用wireshark分析HTTPS流程的建立 摘要: https流程  一、概要 为了网站以及用户的安全性，现在很多的网站都是https，大家都知道tcp通过三次握手建立连接，并且还有很多的同学对https连接建立的流程不太明白，包括我自己，通过借助于wireshark这种抓包工具，我们可以尝试着了解一下大">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image002.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image004.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image005.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image006.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image007.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image008.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image009.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image010.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image011.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image012.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image013.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image014.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image015.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image016.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image017.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image018.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image019.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image020.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image021.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image022.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image023.png">
+<meta property="og:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image025.png">
+<meta property="article:published_time" content="2022-02-26T00:59:23.000Z">
+<meta property="article:modified_time" content="2022-02-26T01:01:43.028Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image002.png">
+  
+  
+  <title>使用wireshark分析HTTP流程的建立 - Befine</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>kyle</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="使用wireshark分析HTTP流程的建立">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-02-26 08:59" pubdate>
+        February 26, 2022 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      55 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">使用wireshark分析HTTP流程的建立</h1>
+            
+            <div class="markdown-body">
+              <p><strong>课后布置任务：wireshark调研、理解、分析来理解TCP&#x2F;IP协议分层意义</strong></p>
+<p><strong>使用<strong><strong>wireshark</strong></strong>分析<strong><strong>HTTPS</strong></strong>流程的建立</strong></p>
+<p>摘要: https流程 </p>
+<p><strong>一、概要</strong></p>
+<p>为了网站以及用户的安全性，现在很多的网站都是https，大家都知道tcp通过三次握手建立连接，并且还有很多的同学对https连接建立的流程不太明白，包括我自己，通过借助于wireshark这种抓包工具，我们可以尝试着了解一下大概的流程。</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image002.png" srcset="/img/loading.gif" lazyload alt="使用wireshark分析HTTP流程的建立/135313_cAZt_2457218.png"></p>
+<p>（图1）</p>
+<p>本图是客户端（10.0.45.103）访问服务端（114.215.88.85）通过wireshark抓包显示出来的双方交互数据，访问是通过https访问服务器上的一台nginx服务器服务。请关注第一列的No。下文中很多时候会用no表示一次交互。</p>
+<p>图中可以很明显的看出tcp的三次握手以及之后的TLS加密流程的建立。</p>
+<p><strong>二、tcp的三次握手</strong></p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image004.png" srcset="/img/loading.gif" lazyload alt="使用wireshark分析HTTP流程的建立/140200_Y5Uw_2457218.png"></p>
+<p>通过流程图可以看出（也可以看图1 的19368到19370这三个编号），首先客户端向服务端发起一个SYN的请求，序号(Seq)为0，确认号（ACK）也为0，这代表是本次是由客户端发起的首次请求。本次请求的数据长度为0</p>
+<p>然后服务端给客户端响应，此时服务端的Seq也是0，指的是服务端的第一回应，并且给客户端说，你的请求我已经收到了（ACK&#x3D;1），</p>
+<p>最后返还给客户端以后，客户端的序号+1，并且对服务端的响应做出确认，最后回给服务端，此时ACK&#x3D;1，Seq&#x3D;1</p>
+<p>tcp的握手过程建立成功。</p>
+<p><strong>三、ssl连接的建立</strong></p>
+<p>通过以上可以看出，SSL也是建立在TCP的基础上的，经过tcp的三次握手，接下来才是加密信道的建立。</p>
+<p>客户端和服务端建立安全连接大致经过以下几个步骤</p>
+<ol>
+<li>客户端：ClientHello</li>
+<li>服务端：Server     Hello，Server certificate，Server     Exchange，Server Hello Done</li>
+<li>客户端：client     Exchange</li>
+<li>客户端：Application     Data</li>
+<li>服务端：New     Session</li>
+<li>服务端：Application     Data</li>
+</ol>
+<p>接下来看这几个步骤中具体的每一个步骤传输的内容</p>
+<p><strong>ClientHello</strong></p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image005.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134547_ojw2_2457218.png"></p>
+<p>client首先给服务端打招呼，对服务端说hello</p>
+<p>应用层没什么特别的</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image006.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134552_1fBk_2457218.png"></p>
+<p>客户端向服务端发送202个字节的数据，并且客户端此时的 seq num 为1 ，tcp三次握手已经通过了，所以客户端ack num 确认的是服务端的tcp的最后一次信息。由于这次发送的长度是202个字节，所以给服务端说，下一个字节序列号是从203开始的。</p>
+<p>标志位为ACK和PSH</p>
+<p>但是这次多了一个 <strong>Secure Socket layer</strong>层。协议使用的时候，用的是Handshake Protocol，给服务端发消息ClientHello</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image007.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134600_evqf_2457218.png"></p>
+<p>详细的信息如下：</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image008.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134607_jbzS_2457218.png"></p>
+<p>Secure Socekts layer层使用的是版本是TLS 1.0</p>
+<p>HandShake Type的类型，是客户端打招呼 client hello</p>
+<p>HandShake protocol 协议使用的是TLS 1.2</p>
+<p>发送的信息还有客户端在本地生成的随机码（<strong>Random</strong>）</p>
+<p>然后客户端声明自己所支持的加密套件（<strong>Cipher Suites</strong>）这个客户端支持15种加密套件</p>
+<p>加密套件中表明了使用的对称加密算法，非对称加密算法，摘要算法以及使用的是TLS或者是SSL</p>
+<p>还有一些其他的信息</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image009.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/142330_nJpy_2457218.png"></p>
+<p>第一行指明是否进行了压缩以及使用的压缩算法，第二行null表明未进行压缩，以及选用相关的压缩算法或者压缩工具</p>
+<p>剩下的就是一些扩展的字段了</p>
+<p>总结下来，客户端向服务端第一次打招呼（client Hello）的时候实际上主要发送了以下主要的信息</p>
+<p><strong>客户端的随机数</strong></p>
+<p><strong>客户端所支持的加密套件</strong></p>
+<p><strong>以及客户端和服务器之间的sessionId</strong></p>
+<p>接下来就是服务端对客户端Hello的第一次回应，也就是编号19372</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image010.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134638_mcW7_2457218.png"></p>
+<p>可以看到 服务端使用的是443端口，序列号（Sequence number）也是1 ，并且回应客户端说我已经确认收到你的202个自己的数据（203-1），Flags表明本次是服务端反馈给客户端请求的应答（蓝色的文字也写出来了，这是一个对19371编号的应答）</p>
+<p>从图1可以看出这是一个TCP连接</p>
+<p><strong>Server Hello</strong></p>
+<p>接下来不等客户端反应，服务端又给客户端发送了19373的数据，而这个数据就是使用了TLS1.2协议了。</p>
+<p>摘要信息中说明了这是服务端的的hello,Server hello,服务端秘钥交换，服务端hello done。接下来看服务端发过来的具体都有什么。</p>
+<p>传输控制层（<strong>transmission control protocol</strong>）和上面一样，主要是一些Flags，端口以及数据长度的确认等等，主要看一下安全套接字层的东西（<strong>Secure Sockets Layer</strong>）中的东西。</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image011.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134646_yeAy_2457218.png"></p>
+<p>通过上图，可以看出服务端主要返回四种内容。</p>
+<ul>
+<li>Server Hello 服务端的回应客户端的hello信息</li>
+<li>Certificate      服务端证书</li>
+<li>Server key     Exchange 服务器秘钥交换</li>
+<li>Server Hello     Done 服务器信息发送完毕</li>
+</ul>
+<p>详细看一下各个Record layer中的具体内容</p>
+<p><strong>Server Hello</strong></p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image012.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134653_YK0K_2457218.png"></p>
+<p>在Server Hello中，服务器返回的服务端的随机数，所选用的TLS 版本，以及服务器最终选用的客户端和服务端交互的加密套件（<strong>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</strong> (0xc030)），<strong>最终选用的加密套件是RSA非对称加密算法以及AES对称加密算法，用的是SHA384做摘要</strong>，注意，这个值必须是客户端发给服务端的列表中选出来的。实际上如果客户端只能支持版本和安全性比较低的加密套件，这样服务端选择和客户端交互的时候也被迫只能使用低版本的加密套件，其安全性就会降低。除了以上这些，服务端Server Hello时发送回来的还有是否使用了压缩以及一些其他的扩展字段</p>
+<p><strong>Certificate</strong></p>
+<p>Server Hello以后，服务端会发送公钥证书给客户端</p>
+<p>Certificates (953 bytes)</p>
+<p>  Certificate Length: 950</p>
+<p>  Certificate: 308203b23082029aa003020102020101300d06092a864886… (id-at-commonName&#x3D;<a target="_blank" rel="noopener" href="http://www.wtf.com,id-at-organizationname=jd,id-at-stateorprovincename=bj,id-at-countryname=cn/">www.wtf.com,id-at-organizationName=JD,id-at-stateOrProvinceName=BJ,id-at-countryName=CN</a>)</p>
+<p>​    signedCertificate</p>
+<p>​      version: v3 (2)</p>
+<p>​      serialNumber: 1</p>
+<p>​      signature (sha256WithRSAEncryption)</p>
+<p>​        Algorithm Id: 1.2.840.113549.1.1.11 (sha256WithRSAEncryption)</p>
+<p>​      issuer: rdnSequence (0)</p>
+<p>​        rdnSequence: 7 items (pkcs-9-at-emailAddress&#x3D;<a href="mailto:&#105;&#108;&#x6f;&#118;&#101;&#109;&#101;&#x33;&#49;&#51;&#x40;&#49;&#54;&#x33;&#46;&#x63;&#x6f;&#x6d;">&#105;&#108;&#x6f;&#118;&#101;&#109;&#101;&#x33;&#49;&#51;&#x40;&#49;&#54;&#x33;&#46;&#x63;&#x6f;&#x6d;</a>,id-at-commonName&#x3D;wangtengfei,id-at-organizationalUnitName&#x3D;section,id-at-organizationName&#x3D;JD,id-at-localityName&#x3D;BJ,id-at-stateOrProvinceName&#x3D;BJ,id-at-countryName&#x3D;CN)</p>
+<p>​          RDNSequence item: 1 item (id-at-countryName&#x3D;CN)</p>
+<p>​           RDNSequence item: 1 item (id-at-stateOrProvinceName&#x3D;BJ)</p>
+<p>​          RDNSequence item: 1 item (id-at-localityName&#x3D;BJ)</p>
+<p>​          RDNSequence item: 1 item (id-at-organizationName&#x3D;JD)</p>
+<p>​          RDNSequence item: 1 item (id-at-organizationalUnitName&#x3D;section)</p>
+<p>​          RDNSequence item: 1 item (id-at-commonName&#x3D;wangtengfei)</p>
+<p>​          RDNSequence item: 1 item (pkcs-9-at-emailAddress&#x3D;<a href="mailto:&#105;&#108;&#x6f;&#118;&#x65;&#x6d;&#x65;&#51;&#49;&#x33;&#x40;&#49;&#54;&#x33;&#x2e;&#x63;&#x6f;&#109;">&#105;&#108;&#x6f;&#118;&#x65;&#x6d;&#x65;&#51;&#49;&#x33;&#x40;&#49;&#54;&#x33;&#x2e;&#x63;&#x6f;&#109;</a>)</p>
+<p>​      validity</p>
+<p>​        notBefore: utcTime (0)</p>
+<p>​          utcTime: 16-11-22 06:38:18 (UTC)</p>
+<p>​        notAfter: utcTime (0)</p>
+<p>​          utcTime: 17-11-22 06:38:18 (UTC)</p>
+<p>​      subject: rdnSequence (0)</p>
+<p>​        rdnSequence: 4 items (id-at-commonName&#x3D;<a target="_blank" rel="noopener" href="http://www.wtf.com,id-at-organizationname=jd,id-at-stateorprovincename=bj,id-at-countryname=cn/">www.wtf.com,id-at-organizationName=JD,id-at-stateOrProvinceName=BJ,id-at-countryName=CN</a>)</p>
+<p>​          RDNSequence item: 1 item (id-at-countryName&#x3D;CN)</p>
+<p>​          RDNSequence item: 1 item (id-at-stateOrProvinceName&#x3D;BJ)</p>
+<p>​          RDNSequence item: 1 item (id-at-organizationName&#x3D;JD)</p>
+<p>​          RDNSequence item: 1 item (id-at-commonName&#x3D;<a target="_blank" rel="noopener" href="http://www.wtf.com/">www.wtf.com</a>)</p>
+<p>​      subjectPublicKeyInfo</p>
+<p>​        algorithm (rsaEncryption)</p>
+<p>​          Algorithm Id: 1.2.840.113549.1.1.1 (rsaEncryption)</p>
+<p>​        subjectPublicKey: 3082010a0282010100be56d1a2b725cf5d6fa1997c83b221…</p>
+<p>​          modulus: 0x00be56d1a2b725cf5d6fa1997c83b221de8452658b1e7c86…</p>
+<p>​          publicExponent: 65537</p>
+<p>​      extensions: 4 items</p>
+<p>​    algorithmIdentifier (sha256WithRSAEncryption)</p>
+<p>​      Algorithm Id: 1.2.840.113549.1.1.11 (sha256WithRSAEncryption)</p>
+<p>​    Padding: 0</p>
+<p>​    encrypted: 41bfd96f86c44a731d6ff7af7e9e666703c744aa8c691d38…</p>
+<p>1中有证书的指纹，以及证书的签名信息</p>
+<p>Certificate:308203b23082029aa003020102020101300d06092a864886…(id-at-commonName&#x3D;<a target="_blank" rel="noopener" href="http://www.wtf.com,id-at-organizationname=jd,id-at-stateorprovincename=bj,id-at-countryname=cn/">www.wtf.com,id-at-organizationName=JD,id-at-stateOrProvinceName=BJ,id-at-countryName=CN</a>)</p>
+<p>看以看出，这个证书是针对<a target="_blank" rel="noopener" href="http://www.wtf.com/">www.wtf.com</a>这个域名签发的，然后就是一些签发机构信息等。</p>
+<p>2 证书的过期时间（validity），可以看出证书的过期时间为1年，从16年11月22日 6点38分18秒(<strong>not Before</strong>)到从17年11月22日 6点38分18秒**(not After)**</p>
+<p>3 证书签发的主体(subject)</p>
+<p>4 公钥证书的key.</p>
+<p>当然这证书下放以后，服务端会把签发的证书的hash也发送过来，以证明此证书在传递过程中没有被修改。</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image013.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134727_AhMO_2457218.png"></p>
+<p>可以看出使用的sha256算法做的摘要。</p>
+<p>证书我们也能在浏览器中用可视化的方法查看。</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image014.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134733_7p1t_2457218.png"></p>
+<p>我会把证书导出，可以自行查看</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image015.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134739_K0FE_2457218.png"></p>
+<p>接下来就是秘钥交换了</p>
+<p><strong>Server key Exchange</strong></p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image016.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134748_Xvo8_2457218.png"></p>
+<p>这个就是服务端公钥的key</p>
+<p><strong>HelloDone</strong></p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image017.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/145205_5lBo_2457218.png"></p>
+<p>最后就是服务端发送一个HelloDone标示本次内容全部发放完毕。</p>
+<p>总结一下 在客户端向服务端打招呼以后，服务端主要发送了那些内容。首先是发送<strong>服务端自己的随机数</strong>给客户端，然后下发<strong>服务端公钥证书</strong>和下发<strong>公钥的key</strong>，最后服务端用<strong>hellodone标示</strong>此次内容全部发送完毕。以上发送过程我们都可以看得到，也就是说在这个过程中，客户端和服务端交互使用的都还是明文。</p>
+<p><strong>Client keyExchange</strong></p>
+<p>客户端接收到服务端的这些证书信息以后，解析来会进行回应服务端。可以看19374编号</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image018.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134755_GHFK_2457218.png"></p>
+<p>查看传输层，传输层中明确写明了这是对19373的一个回应。</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image019.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134801_5ZyK_2457218.png"></p>
+<p>重点还是查看安全套接字层，具体来看回应的是什么</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image020.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134806_JI94_2457218.png"></p>
+<p>主要包含了如下几个方面</p>
+<p><strong>Client key exchange</strong></p>
+<p>包含了pre-master secret。这是在握手过程中生成的第三个随机数。分别是client hello阶段客户端的随机数，然后在server hello 阶段服务端的随机数。这一次是客户端接收到服务端的证书以后，生成的一个预加密因子（供对称加密使用）。</p>
+<p><strong>Change cipher spec</strong></p>
+<p>客户端通知服务端接下来就要使用加密的方式来进行通信了。</p>
+<p>然后在19375中，客户端发送给服务端一段加密后的内容（<strong>就是在这一步，数据的交互从明文开始转化为密文</strong>），并且把本次会话信息中的所有细节做摘要发给服务端，以证明在本次过程中双方达成一致，未受到其他干扰</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image021.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134814_0LMy_2457218.png"></p>
+<p><strong>服务端确认客户端加密请求</strong></p>
+<p>然后服务端会在19376和19377中，服务端对客户端的发送的内容进行确认（19374），提供新的Session Ticket，然后发送了一段内容，并且对所有握手内容做摘要，发给客户端来验证通信过程是否被篡改。</p>
+<p>最后在19378中，客户端对服务端发送的内容进行做确认</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image022.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134819_wcos_2457218.png"></p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image023.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/134825_hEmw_2457218.png"></p>
+<p>注意一下，这时候内容发送的协议已经不是SSL了，已经重新更改为了TCP</p>
+<p>接下来就是在此加密信道上开始正常的业务数据传输过程。</p>
+<p>（tcp.stream eq 296）</p>
+<p>整个交互过程的概要可以用下图表示</p>
+<p><img src="/2022/02/26/%E4%BD%BF%E7%94%A8wireshark%E5%88%86%E6%9E%90HTTP%E6%B5%81%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B/clip_image025.png" srcset="/img/loading.gif" lazyload alt="https://static.oschina.net/uploads/space/2016/1125/145621_RZWX_2457218.png"></p>
+<p>小结：</p>
+<p>本文大概的跟踪了以下https建立安全链接的过程，并未提到常用的加密算法什么的用到什么地方，在本文的最后提一下，https过程的建立，实际上就是一次一密，根本目的是为了协商出双方使用哪种对称加密算法，然后加密因子是多少，为了达到这个目的，双方使用了非对称加密进行协商，拿到双方的随机数，然后进行相关的计算得到一个随机对称加密的加密因子。为了确保客户端正在和真正的不是冒牌的服务器在协商，这个就用到了证书，由于是证书是可以自签名的，自签名是不可信的，所以就需要就需要找一个大家都信任的机构进行签名，例如CA。这样浏览器才会认可这个证书。还有就是为了保证在协商的过程中不受干扰，在协商的每一步都会把本次会话的信息做摘要传递给双方，用以校验。</p>
+<p>当然了本文只是一个极其粗略的https流程的简介，https还涉及到很多其他的内容，例如一些https加密信道的重用，由于https的建立比较慢，所以google就发明了一种更快的协议QUIC。</p>
+<p>由于作者水平有限，毕竟会有些疏漏以及理解不到位的地方，希望读者给予指正，以使其他人不被误解。 </p>
+<p>附：</p>
+<p><a target="_blank" rel="noopener" href="https://git.oschina.net/tofu.wang/wireshark-https/tree/master">https://git.oschina.net/tofu.wang/wireshark-https/tree/master</a> </p>
+<p>从这个里面可以下载到本次模拟的证书以及具体用wireshark抓包过来的包，然后打开wireshark进行导入，过滤器写ip.addr&#x3D;&#x3D;114.215.88.85 即可</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/25/GNS3/">
+                        <span class="hidden-mobile">GNS3</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+      <div class="col-lg-7 mx-auto nopadding-x-md">
+        <div class="container custom mx-auto">
+          <center> <span id="runtime_span", style="color:#000000"></span> </center> <script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new  Date("2/2/2022 00:00:00"); Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000; a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60); runtime_span.innerHTML="This site has survived: "+A+" days"+B+" hours"+C+" minuts"+D+" seconds"}show_runtime();</script> <center><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> <span id="busuanzi_container_site_pv">has been visited <span id="busuanzi_value_site_pv"></span> times</span></center>
+        </div>
+      </div>
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/xiantiao.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/love.js"></script>
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
