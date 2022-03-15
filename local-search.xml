@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>计算机网络学习</title>
+    <link href="/2022/03/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0/"/>
+    <url>/2022/03/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0/</url>
+    
+    <content type="html"><![CDATA[<h3 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h3><h5 id="计算机网络的拓扑结构"><a href="#计算机网络的拓扑结构" class="headerlink" title="计算机网络的拓扑结构"></a>计算机网络的拓扑结构</h5><p>​        把计算机网络中的网络设备看做点，连接各个点的链路看做边，组成的几何图形称为计算机网络的<strong>拓扑结构</strong>,常见的拓扑结构有两种：<strong>点到点型</strong>与<strong>共享型</strong>。</p><img src="/2022/03/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0/1647341294634.png" alt="1647341294634" style="zoom: 25%;"><p><img src="/2022/03/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0/1647341312264.png" alt="1647341312264"></p><p>目前世界上大多数计算机网络采用总线型为主，但是基本都是各种结构相结合的。</p><h5 id="计算机网络分类"><a href="#计算机网络分类" class="headerlink" title="计算机网络分类"></a>计算机网络分类</h5><p>按照覆盖范围可分为</p><p>1.局域网</p><p>2.城域网</p><p>3.广域网</p><p>按通信介质可分为</p><p>1.有线网</p><p>2.无线网</p><p>等等其他</p><h5 id="网络协议与体系结构"><a href="#网络协议与体系结构" class="headerlink" title="网络协议与体系结构"></a>网络协议与体系结构</h5><p>网络协议是数据进行传输要遵循的规则，包括<strong>语法</strong>、<strong>语义</strong>、<strong>时序</strong>三个要素。</p><p>​    语法：信息的结构与格式</p><p>​    语义：各部分的具体含义</p><p>​    时序：规定一系列操作的顺序。</p><p>网络体系结构规定了网络协议的实现分几层，每层所要完成的功能以及各层之间的联系。</p><p>在这种层次模型中，仅相邻层间存在关系，下一层为上一层提供服务，进而将消息传给下一层。各层处理完后都会加上一个<strong>首部</strong>，用于提醒下一层进行的操作。</p><img src="/2022/03/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0/1647342270247.jpg" alt="1647342270247" style="zoom:33%;"><h5 id="Internet-体系结构"><a href="#Internet-体系结构" class="headerlink" title="Internet 体系结构"></a>Internet 体系结构</h5><p>​    Internet体系结构也称TCP&#x2F;IP参考模型，分为四层：<strong>物理网络层，网络层，传输层，应用层</strong>。</p><p><strong>应用层</strong>：接收并响应用户的各种请求，为用户提供各种服务，比如 远程登录服务，文件传输服务，电子邮件传输                服务，WWW服务。</p><p><strong>传输层</strong>：提供<strong>端到端</strong>之间的可靠通信，具有差别控制、数据包的分组与重组、顺序控制等功能。包括面向连接的                TCP和无连接的UDP。</p><p><strong>网络层</strong>：通过网络互联协议（IP）,将不同的物理网络连接起来。IP地址的分配与管理，网络的测试与控制。</p><p><strong>物理网络层</strong>：接收网络层的IP报文然后通过物理网络进行传输，或者从接收的物理信号中提取出IP报文并提交给网                        络层。</p><h5 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h5><h6 id="IP地址和物理地址"><a href="#IP地址和物理地址" class="headerlink" title="IP地址和物理地址"></a>IP地址和物理地址</h6><h6 id="计算机网络的服务类型"><a href="#计算机网络的服务类型" class="headerlink" title="计算机网络的服务类型"></a>计算机网络的服务类型</h6><div class="code-wrapper"><pre><code class="hljs">1. 面向连接的服务，接收方要确认收到信息（建立连接），非常可靠。但是速度减慢了。Internet中的TCP是面向连接的。 2. 无连接服务，不用建立连接（像短信），速度快，不太可靠。</code></pre></div><h5 id="计算机网络的主要性能指标"><a href="#计算机网络的主要性能指标" class="headerlink" title="计算机网络的主要性能指标"></a>计算机网络的主要性能指标</h5><p>1.延迟：从发送分组到接收到分组所用的时间。</p><p>2.吞吐率：每秒钟网络传输的数据量，受制于最小的链路。</p><p>3.丢失率：单位时间丢失的数据量。</p><p>4.抖动：发送和接收数据时吞吐量的变化，用来衡量网络的稳定性。</p><h5 id="几个题："><a href="#几个题：" class="headerlink" title="几个题："></a>几个题：</h5><p>1.电路交换、报文交换、分组交换的特点？</p><p>​     <a href="https://zhuanlan.zhihu.com/p/205251011">电路交换、报文交换与分组交换 - 知乎 (zhihu.com)</a> </p><p>2.简述计算机网络的定义？</p><p>​     一些相互连接的、以 共享资源 为目的的、自治的计算机的集合。 </p><p>3.计算机网络的主要功能是什么？与计算机通信网有什么区别？</p><p>4.计算机网络的组成？</p><p>​      硬件软件协议</p><p>5.计算机网络涉及的软件有哪些？</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>计网</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>22.3.15</title>
     <link href="/2022/03/14/22-3-15/"/>
     <url>/2022/03/14/22-3-15/</url>
