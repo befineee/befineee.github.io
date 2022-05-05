@@ -25,8 +25,9 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2022/03/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/1647341294634.png">
 <meta property="og:image" content="http://example.com/2022/03/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/1647341312264.png">
+<meta property="og:image" content="https://gitee.com/Dky505/cloud-images/raw/master/img/image-20201222171830341.png">
 <meta property="article:published_time" content="2022-03-24T12:59:35.000Z">
-<meta property="article:modified_time" content="2022-03-24T14:40:54.769Z">
+<meta property="article:modified_time" content="2022-03-26T04:22:51.314Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/2022/03/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/1647341294634.png">
@@ -199,7 +200,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.4k 字
+      4.6k 字
     </span>
   
 
@@ -208,7 +209,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12 分钟
+      39 分钟
     </span>
   
 
@@ -289,6 +290,50 @@
 <p>​    4.<strong>排队时延</strong></p>
 <p>​    （一般处理时延和排队时延可以忽略）    </p>
 <h6 id="吞吐量"><a href="#吞吐量" class="headerlink" title="吞吐量"></a>吞吐量</h6><p>​    吞吐率：每秒钟网络传输的数据量，受制于最小的链路。</p>
+<h3 id="体系结构与参考模型"><a href="#体系结构与参考模型" class="headerlink" title="体系结构与参考模型"></a>体系结构与参考模型</h3><h5 id="分层结构"><a href="#分层结构" class="headerlink" title="分层结构"></a>分层结构</h5><ol>
+<li>各层之间相互独立，每层只实现一种相对独立的功能。</li>
+<li>每层之间界面自然清晰，易于理解，相互交流尽可能少。</li>
+<li>各层功能的精确定义独立于具体的实现方法，每层都采用最合适的技术来实现。</li>
+<li>保持下层对上层的独立性，<strong>上层单向使用下层提供的服务</strong>。</li>
+<li>整个分层结构应该能促进标准化工作。</li>
+</ol>
+<p>​    把计算机网络的各层及其协议的集合称为网络的体系结构。</p>
+<p>​    最层为第一层</p>
+<p>​    第n层<strong>实体</strong>：指任何可发送或接收信息的硬件或软件进程。不同机器上同一层实体称为<strong>对等实体</strong>。</p>
+<p>​    在网络结构的不同层次中，每个报文都分为两部分：<strong>数据部分SDU</strong>、<strong>控制信息部分PCI</strong>，他们共同组成<strong>协议数据单元PDU</strong>。每层的协议数据单元都有一个通俗的名称，物理层的PDU称为比特，数据链路层的PDU称为帧，网络层的PDU称为分组，传输层的PDU称为报文段。n+1层的PDU作为n层的SDU，加上n层的PCI后称为n层的PDU，也是n-1层的SDU。</p>
+<p>​    第n层的实体不仅要使用第n-1层的服务，实现自身定义的功能，还要向第n+1层提供本层的服务，该服务是第n层及其下面各层提供的服务总和。<br>​    最低层只提供服务，是整个层次结构的基础；中间各层既是下一层的服务使用者，又是上一层的服务提供者；最高层面向用户提供服务。<br>​    最低层只提供服务，是整个层次结构的基础；中间各层既是下一层的服务使用者，又是上一层的服务提供者；最高层面向用户提供服务。<br>​    <em>两个主机通信时，对等层在逻辑上有一条直接信道，表现为不经过下层就把信息传送到对方。</em>？？</p>
+<h5 id="协议、接口、服务"><a href="#协议、接口、服务" class="headerlink" title="协议、接口、服务"></a>协议、接口、服务</h5><div class="code-wrapper"><pre><code class="hljs"> **协议**，就是规则的集合。  为进行网络中的数据交换而建立的规则、标准或约定称为**网络协议 (Network Protocol)**， 它是控制两个(或多个)对等实体进行通信的规则的集合 。
+</code></pre></div>
+<p>协议由语法、语义和同步三部分组成：</p>
+<ul>
+<li><strong>语法</strong> - 规定了传输数据的格式。</li>
+<li><strong>语义</strong> - 规定了所要完成的功能，即需要发出何种控制信息、完成何种动作以及做出何种应答。</li>
+<li><strong>同步</strong> - 规定了执行各种操作的条件、时序关系等，即事件实现顺序的详细说明。</li>
+</ul>
+<p> 一个完整的协议通常应具有线路管理 (建立、释放连接)、差错控制、数据转换等功能。 </p>
+<p> <strong>接口</strong> 是同一结点内相邻两层间交换信息的连接点，是一个系统内部的规定。每一层只能为紧邻的层次之间定义接口，不能跨层定义接口。 </p>
+<p>​    在典型的接口上，同一结点相邻两层的实体通过 服务访问点 (Service Access Point, SAP) 进行交互。服务是通过服务访问点SAP提供给上层使用的，第n层的SAP就是第n+1层可以访问第n层服务的地方。每个SAP都有一个能够标识它的地址。一般而言，物理层的服务访问点是“网卡接口”，数据链路层的服务访问点是“Mac地址”（网卡地址），网络层的服务访问点是“IP地址”（网络地址），传输层的服务访问点是“端口号”，应用层提供的服务访问点是“用户界面”。服务访问点SAP是一个抽象的概念，它实际上就是一个逻辑接口(类似于邮政信箱)，但和通常所说的两个设备之间的硬件接口是很不一样的。</p>
+<p><strong>服务</strong>是指下层为紧相邻的上层提供的功能调用，也就是垂直的。对等实体在协议的控制下，使得本层能为上一层提供服务，但要实现本层协议还需要使用下一层所提供的服务。</p>
+<p>上层使用下层所提供的服务必须通过与下层交换一些命令，这些命令在OSI中称为服务原语。OSI将原语划分为四类 :</p>
+<p>请求(Request) - 由服务用户发往服务提供者，请求完成某项工作。<br>指示(Indication) - 由服务提供者发往服务用户，指示用户做某件事。<br>响应(Response) - 由服务用户发往服务提供者，作为对指示的响应。<br>证实(Conforτnation) - 由服务提供者发往服务用户，作为对请求的证实。<br>这四类原语用于不同的功能，如建立连接、传输数据和断开连接等。有应答服务包括全部四类原语，而无应答服务则只有请求和指示两个原语。</p>
+<h5 id="根据服务"><a href="#根据服务" class="headerlink" title="根据服务"></a>根据服务</h5><h5 id="分类-1"><a href="#分类-1" class="headerlink" title="分类"></a>分类</h5><h6 id="面向连接服务与无连接服务"><a href="#面向连接服务与无连接服务" class="headerlink" title="面向连接服务与无连接服务"></a>面向连接服务与无连接服务</h6><p>​    <strong>面向连接服务</strong> - 通信前双方必须先建立连接，分配相应的资源(如缓冲区)，以保证通信能正常进行，传输结束后释放连接和所占用的资源。因此这种服务可以分为连接建立、数据传输和连接释放这三个阶段。例如 TCP 就是一种面向连接服务的协议。<br>​    <strong>无连接服务</strong> - 通信前双方不需要先建立连接，需要发送数据时就直接发送，把每个带有目的地址的包(报文分组)传送到线路上，由系统选定路线进行传输，是一种不可靠的服务。这种服务常被描述为 “尽最大努力交付” (Best-Effort-Delivery)，并不保证通信的可靠性。例如 IP、UDP 就是一种无连接服务的协议。</p>
+<h6 id="可靠服务和不可靠服务"><a href="#可靠服务和不可靠服务" class="headerlink" title="可靠服务和不可靠服务"></a>可靠服务和不可靠服务</h6><p>​    <strong>可靠服务</strong> - 是指网络具有<strong>纠错、检错、应答</strong>机制，能保证数据正确、可靠地传送到目的地。</p>
+<p>​    <strong>不可靠服务</strong> - 是指网络只是尽量正确、可靠地传送，但不能保证数据正确、可靠地传送到目的地，是一种尽力而为的服务。</p>
+<p>​    对于提供不可靠服务的网络，其网络的正确性、可靠性就要由应用或用户来保障。</p>
+<h6 id="有应答服务和无应答服务"><a href="#有应答服务和无应答服务" class="headerlink" title="有应答服务和无应答服务"></a>有应答服务和无应答服务</h6><p>​    <strong>有应答服务</strong> - 是指接收方在收到数据后向发送方给出相应的应答，该应答由传输系统内部自动实现，而不是由用户实现。所发送的应答可以是肯定应答，也可以是否定应答，通常在接收到的数据有错误时发送否定应答。例如，文件传输服务就是一种有应答服务。<br>​    <strong>无应答服务</strong> - 是指接收方收到数据后不自动给出应答。若需要应答，则由高层实现。例如WWW服务，客户端收到服务器发送的页面文件后不给出应答。</p>
+<h4 id="ISO-x2F-OSI参考模型与TCP-x2F-IP参考模型"><a href="#ISO-x2F-OSI参考模型与TCP-x2F-IP参考模型" class="headerlink" title="ISO&#x2F;OSI参考模型与TCP&#x2F;IP参考模型"></a>ISO&#x2F;OSI参考模型与TCP&#x2F;IP参考模型</h4><p>​     国际标准化组织 (ISO) 于1984年提出的网络体系结构模型，称为<strong>开放系统互联参考模型 (OSI&#x2F;RM)</strong> ，通常简称为<strong>OSI参考模型</strong> (理论成功，市场失败)。  OSI有七层，自下而上依次为物理层、数据链路层、网络层、运输层、会话层、表示层、应用层。<strong>低三层统称为通信子网</strong>，它是为了联网而附加上去的通信设备，完成数据的传输功能；<strong>高三层统称为资源子网</strong>，它相当于计算机系统，完成数据的处理等功能。运输层承上启下。 </p>
+<p>​     <strong>物理层 ( Physical Layer )</strong> ：利用物理媒介传输比特</p>
+<p>​     <strong>数据链路层 ( Data Link Layer )</strong> ： 成帧、差错控制、流量控制和传输管理等，无拥塞控制</p>
+<p>​     <strong>网络层 ( Network Layer )</strong> ： 关键问题是对分组进行路由选择，并实现<strong>流量控制、拥塞控制、差错控制和网际互联</strong>等功能。 </p>
+<p>​     <strong>传输层 ( Transport Layer )</strong> ： 为端到端连接提供<strong>流量控制、差错控制、服务质量、数据传输</strong>管理等服务。 </p>
+<p>​     <strong>会话层 (Session Layer )</strong> ： 会话层允许不同主机上各进程之间的会话。会话层利用传输层提供的端到端的服务，向表示层提供它的增值服务。这种服务主要是向表示层实体或用户进程提供建立连接并在连接上有序地传输数据，这就是会话，也称为建立同步(SYN) 。 会话层负责管理主机间的会话进程，包括建立、管理以及终止进程间的会话。会话层使用校验点可使通信会话在通信失效时从校验点继续恢复通信，实现数据同步。 </p>
+<p>​     <strong>表示层 ( Presentation Layer )</strong> ： 表示层主要用于处理在两个通信系统中交换信息的表示方式。不同机器采用的编码和表示方法不同，使用的数据结构也不同。为了使不同表示方法的数据和信息之间能互相交换，表示层采用抽象的标准方法定义数据结构，并采用标准的编码形式。<strong>数据压缩、加密和解密</strong>也是表示层可提供的数据表示变换功能。 </p>
+<p>​     <strong>应用层 ( Application Layer )</strong> ： 应用层是OSI模型的最高层，是用户与网络的界面。应用层为特定类型的网络应用提供访问OSI环境的手段。因为用户的实际应用多种多样，这就要求应用层采用不同的应用协议来解决不同类型的应用要求，因此应用层是最复杂的 一层，使用的协议也最多。</p>
+<p>​    </p>
+<p>​    传输层及以上才能称为端到端</p>
+<p>​    ISO&#x2F;OSI参考模型在网络层支持无连接和面向连接的通信，但在传输层仅支持面向连接的通信；TCP&#x2F;IP模型在网络层仅支持无连接的通信（IP协议无连接），而在传输层支持面向连接（TCP）和无连接（UDP）的通信。</p>
+<h4 id="TCP-x2F-IP模型"><a href="#TCP-x2F-IP模型" class="headerlink" title="TCP&#x2F;IP模型"></a>TCP&#x2F;IP模型</h4><p> <img src="https://gitee.com/Dky505/cloud-images/raw/master/img/image-20201222171830341.png" srcset="/img/loading.gif" lazyload alt="image-20201222171830341"> </p>
+<p>​    </p>
 
             </div>
             <hr>
@@ -315,6 +360,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2022/03/26/%E5%BA%94%E7%94%A8%E5%B1%82/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">应用层</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
