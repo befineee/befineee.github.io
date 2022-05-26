@@ -16,19 +16,44 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Archives">
-<meta property="og:url" content="http://example.com/archives/index.html">
+    <meta name="description" content="先搭建如图所示拓扑结构： ​     对R1进行配置： 123456config tint f0&#x2F;0no shutdownip address 12.1.1.1 255.255.255.0end   对R2进行同样的配置 然后设置uername什么的：  先打开wireshark, 然后在R1中对R2发起请求：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP协议分析">
+<meta property="og:url" content="http://example.com/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="Befine">
+<meta property="og:description" content="先搭建如图所示拓扑结构： ​     对R1进行配置： 123456config tint f0&#x2F;0no shutdownip address 12.1.1.1 255.255.255.0end   对R2进行同样的配置 然后设置uername什么的：  先打开wireshark, 然后在R1中对R2发起请求：">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653025941260.png">
+<meta property="og:image" content="http://example.com/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653026260855.png">
+<meta property="og:image" content="http://example.com/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653026906938.png">
+<meta property="og:image" content="http://example.com/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653026992730.png">
+<meta property="og:image" content="http://example.com/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653027525631.png">
+<meta property="article:published_time" content="2022-05-20T05:44:46.000Z">
+<meta property="article:modified_time" content="2022-05-20T06:18:54.576Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653025941260.png">
   
   
-  <title>Archives - Befine</title>
+  <title>TCP协议分析 - Befine</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
@@ -55,7 +80,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -156,9 +181,43 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Archive">
+            <span class="h2" id="subtitle" title="TCP协议分析">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-20 13:44" pubdate>
+        May 20, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      136 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      2 分钟
+    </span>
+  
+
+  
+  
+</div>
 
             
           </div>
@@ -171,100 +230,99 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">29 posts in total.</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2022</p>
-    
-    <a href="/2022/05/26/%E5%86%B3%E7%AD%96%E6%A0%91%E5%AE%9E%E7%8E%B0%E8%BF%9E%E7%BB%AD%E5%9E%8B%E5%B1%9E%E6%80%A7%E5%80%BC%E7%9A%84%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">决策树实现连续型属性值的分类问题</span>
-      <time style="float: right;">05-26</time>
-    </a>
-  
-    
-    <a href="/2022/05/21/ARP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">ARP协议分析</span>
-      <time style="float: right;">05-21</time>
-    </a>
-  
-    
-    <a href="/2022/05/20/%E4%B8%89%E5%B1%82%E4%BA%A4%E6%8D%A2%E6%9C%BA/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">三层交换机</span>
-      <time style="float: right;">05-20</time>
-    </a>
-  
-    
-    <a href="/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">TCP协议分析</span>
-      <time style="float: right;">05-20</time>
-    </a>
-  
-    
-    <a href="/2022/05/20/%E7%BD%91%E7%BA%BF%E5%88%B6%E4%BD%9C/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">网线制作</span>
-      <time style="float: right;">05-20</time>
-    </a>
-  
-    
-    <a href="/2022/05/05/python%E7%94%A8%E4%BA%8C%E7%BB%B4%E5%88%97%E8%A1%A8%E5%AD%98%E6%94%BE%E7%B1%BB%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">python用二维列表存放类的对象</span>
-      <time style="float: right;">05-05</time>
-    </a>
-  
-    
-    <a href="/2022/03/26/%E5%BA%94%E7%94%A8%E5%B1%82/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">应用层</span>
-      <time style="float: right;">03-26</time>
-    </a>
-  
-    
-    <a href="/2022/03/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">计算机网络体系结构</span>
-      <time style="float: right;">03-24</time>
-    </a>
-  
-    
-    <a href="/2022/03/19/PPTology/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">PPTology</span>
-      <time style="float: right;">03-19</time>
-    </a>
-  
-    
-    <a href="/2022/03/16/python%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%BE/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">python程序设计课</span>
-      <time style="float: right;">03-16</time>
-    </a>
-  
-</div>
 
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">TCP协议分析</h1>
+            
+            <div class="markdown-body">
+              <p>先搭建如图所示拓扑结构：</p>
+<p>​    <img src="/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653025941260.png" srcset="/img/loading.gif" lazyload alt="1653025941260"></p>
+<p>对R1进行配置：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">config</span> t<br><span class="hljs-attribute">int</span> f<span class="hljs-number">0</span>/<span class="hljs-number">0</span><br><span class="hljs-attribute">no</span> shutdown<br><span class="hljs-attribute">ip</span> address <span class="hljs-number">12.1.1.1</span> <span class="hljs-number">255.255.255.0</span><br><span class="hljs-attribute">end</span><br><br></code></pre></td></tr></table></figure>
 
-  <nav aria-label="navigation">
-    <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/#board">2</a><a class="page-number" href="/archives/page/3/#board">3</a><a class="extend next" rel="next" href="/archives/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
-    </span>
-  </nav>
+<p><img src="/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653026260855.png" srcset="/img/loading.gif" lazyload alt="1653026260855"></p>
+<p>对R2进行同样的配置</p>
+<p>然后设置uername什么的：</p>
+<p><img src="/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653026906938.png" srcset="/img/loading.gif" lazyload alt="1653026906938"></p>
+<p>先打开wireshark, 然后在R1中对R2发起请求：</p>
+<p><img src="/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653026992730.png" srcset="/img/loading.gif" lazyload alt="1653026992730"></p>
+<p><img src="/2022/05/20/TCP%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/1653027525631.png" srcset="/img/loading.gif" lazyload alt="1653027525631"></p>
 
-
-
-
-              </div>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%A1%E7%BD%91%E5%AE%9E%E9%AA%8C/">计网实验</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/20/%E4%B8%89%E5%B1%82%E4%BA%A4%E6%8D%A2%E6%9C%BA/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">三层交换机</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/20/%E7%BD%91%E7%BA%BF%E5%88%B6%E4%BD%9C/">
+                        <span class="hidden-mobile">网线制作</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -353,6 +411,19 @@
   
 
 
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
 
 
 
