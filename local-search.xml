@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>算法学习记录</title>
+    <link href="/2022/06/30/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
+    <url>/2022/06/30/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
+    
+    <content type="html"><![CDATA[<h4 id="总和区间最大问题"><a href="#总和区间最大问题" class="headerlink" title="总和区间最大问题"></a>总和区间最大问题</h4><p>给定一个实数序列，设计一个算法，找到一个总和最大的区间。</p><h5 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h5><p>三层循环，第一个循环遍历开始位置，第二层循环遍历结束位置，第三层循环把开始位置到结束位置的所有数相加，记录最大的。算法复杂度O(N^3^)</p><h5 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h5><p>两层循环，第一层循环为开始位置p，第二层循环维护一个变量S(p,q)，意义是从p到q的和，计算S(p,q+1)时只需将S(p,q)加上（q+1）,储存一个最大值变量，如果S（p,q）&gt;Max，记录相应参数，更新Max。复杂度O(N^2^)</p><h5 id="方法3"><a href="#方法3" class="headerlink" title="方法3"></a>方法3</h5><p>分治思想。具体略，复杂度为O（N Log N）</p><h5 id="方法4"><a href="#方法4" class="headerlink" title="方法4"></a>方法4</h5><p>改进方法2，正反扫描两遍。找到第一个为正的实数，利用方法2，可以找到一个右边界，但是不知道左边界，因此从右边界开始向左扫描一遍同理可以得到左边界，因此复杂度为O（N）。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法学习</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>try</title>
     <link href="/2022/06/30/try/"/>
     <url>/2022/06/30/try/</url>
