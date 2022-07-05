@@ -24,7 +24,7 @@
 <meta property="og:description" content="总和区间最大问题给定一个实数序列，设计一个算法，找到一个总和最大的区间。 方法1三层循环，第一个循环遍历开始位置，第二层循环遍历结束位置，第三层循环把开始位置到结束位置的所有数相加，记录最大的。算法复杂度O(N^3^) 方法2两层循环，第一层循环为开始位置p，第二层循环维护一个变量S(p,q)，意义是从p到q的和，计算S(p,q+1)时只需将S(p,q)加上（q+1）,储存一个最大值变量，如果S（">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-06-30T13:11:57.000Z">
-<meta property="article:modified_time" content="2022-06-30T13:15:28.746Z">
+<meta property="article:modified_time" content="2022-07-05T08:26:03.951Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -196,7 +196,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      344 字
+      1.5k 字
     </span>
   
 
@@ -205,7 +205,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3 分钟
+      13 分钟
     </span>
   
 
@@ -237,11 +237,23 @@
             <h1 style="display: none">算法学习记录</h1>
             
             <div class="markdown-body">
-              <h2 id="总和区间最大问题"><a href="#总和区间最大问题" class="headerlink" title="总和区间最大问题"></a>总和区间最大问题</h2><p>给定一个实数序列，设计一个算法，找到一个总和最大的区间。</p>
+              <h2 id="总和区间最大问题"><a href="#总和区间最大问题" class="headerlink" title="总和区间最大问题"></a>总和区间最大问题</h2><p><strong>给定一个实数序列，设计一个算法，找到一个总和最大的区间。</strong></p>
 <h5 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h5><p>三层循环，第一个循环遍历开始位置，第二层循环遍历结束位置，第三层循环把开始位置到结束位置的所有数相加，记录最大的。算法复杂度O(N^3^)</p>
 <h5 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h5><p>两层循环，第一层循环为开始位置p，第二层循环维护一个变量S(p,q)，意义是从p到q的和，计算S(p,q+1)时只需将S(p,q)加上（q+1）,储存一个最大值变量，如果S（p,q）&gt;Max，记录相应参数，更新Max。复杂度O(N^2^)</p>
 <h5 id="方法3"><a href="#方法3" class="headerlink" title="方法3"></a>方法3</h5><p>分治思想。具体略，复杂度为O（N Log N）</p>
 <h5 id="方法4"><a href="#方法4" class="headerlink" title="方法4"></a>方法4</h5><p>改进方法2，正反扫描两遍。找到第一个为正的实数，利用方法2，可以找到一个右边界，但是不知道左边界，因此从右边界开始向左扫描一遍同理可以得到左边界，因此复杂度为O（N）。</p>
+<h3 id="区间和等于一个数"><a href="#区间和等于一个数" class="headerlink" title="区间和等于一个数"></a>区间和等于一个数</h3><h5 id="方法1-1"><a href="#方法1-1" class="headerlink" title="方法1"></a>方法1</h5><p>外层循环设置起始位置，内层循环可以计算从起始位置到序列末尾任何一个数为区间右端点的区间和，O（N^2^）</p>
+<h5 id="方法2-1"><a href="#方法2-1" class="headerlink" title="方法2"></a>方法2</h5><p>方法1其实做了重复计算，计算了S（1,q）后，S（p,q）&#x3D; S (1,q) - S (1,p-1),S(1,q)可以构建嘻哈表。O(N)</p>
+<h3 id="二维矩阵找和最大的矩形区域"><a href="#二维矩阵找和最大的矩形区域" class="headerlink" title="二维矩阵找和最大的矩形区域"></a>二维矩阵找和最大的矩形区域</h3><p>假设行列号从0开始，设s(i,j)为第i行前j个数字之和，依据之前的算法，复杂度为O（m*n），设S（p,q）为矩阵中以（0,0）位左上角点 ，以（p,q）为右下角点的矩形数字之和，S（p,q）&#x3D; S（p-1,q）+s(p,q)复杂度为O（m*n）,得到所有S（p,q）并找出最大的S（p<del>1</del>,q<del>1</del>）,当做矩形的右下角点，与一维数组的思路一样，再遍历一遍得到矩形的左上角点，p<del>0</del>q<del>0</del>, 矩形的面积为 S（p<del>1</del>,q<del>1</del>）- S(p<del>1</del>,q<del>0</del>) - S(p<del>0</del>,q<del>1</del>) + S（p<del>0</del>,q<del>0</del>）,找到最大的。复杂度也为O（m*n）。总体来说复杂度为O（m*n）,只是需要较大的空间。</p>
+<h3 id="递归问题"><a href="#递归问题" class="headerlink" title="递归问题"></a>递归问题</h3><h4 id="全排列"><a href="#全排列" class="headerlink" title="全排列"></a>全排列</h4><p> <strong>按照字典序输出自然数 1到 n所有不重复的排列，即 n 的全排列，要求所产生的任一数字序列中不允许出现重复的数字。</strong> 假设n取1到9.</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></div></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">对当前的位置进行深度优先搜索，找到每个可以填进去的数进行尝试。搜完了这个位置以后回溯继续搜。</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">int</span> n;<br><span class="hljs-keyword">int</span> line[<span class="hljs-number">10</span>]; <span class="hljs-comment">//排列</span><br><span class="hljs-keyword">bool</span> visit[<span class="hljs-number">10</span>];<span class="hljs-comment">//标记是否使用</span><br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>; i&lt;=n; ++i)<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d &quot;</span>, line[i]);<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);<br>	<span class="hljs-keyword">return</span> ;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">if</span>(x&gt;n)<br>	&#123;<br>		<span class="hljs-built_in">print</span>(); 搜索到叶子节点，打印。<br>	&#125;<br>	<span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>; i&lt;=n; ++i)<br>	&#123;<br>		<span class="hljs-keyword">if</span>(visit[i]) <span class="hljs-keyword">continue</span>;<span class="hljs-comment">//objective 1 如果这个数用过了怎么办？</span><br>		<span class="hljs-keyword">else</span><br>        &#123;<br>          visit[i] = <span class="hljs-number">1</span>;<br>          line[x]=i; <span class="hljs-comment">//第x层赋值</span><br>          <span class="hljs-built_in">dfs</span>(x+<span class="hljs-number">1</span>); <span class="hljs-comment">//第x+1层</span><br>          visit[i]=<span class="hljs-number">0</span>; 不能再向下搜索，开始回溯，删去标记。<br>        &#125;<br>	&#125;<br>	<span class="hljs-keyword">return</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d&quot;</span>,&amp;n);<br>	<span class="hljs-built_in">dfs</span>(<span class="hljs-number">1</span>); 从搜索树的第一层开始<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
 
             </div>
             <hr>
